@@ -1,11 +1,13 @@
-const sdk = require("node-appwrite");
+import sdk from "node-appwrite"
+import dotenv from "dotenv";
+dotenv.config();
 
 const client = new sdk.Client();
 
 client
   .setEndpoint('https://cloud.appwrite.io/v1')
-  .setProject('') // Replace with your actual project ID
-  .setKey(''); // Replace with your actual API key
+  .setProject(process.env.APPWRITE_PROJECT_ID) // Replace with your actual project ID
+  .setKey(process.env.APPWRITE_API_KEY); // Replace with your actual API key
   const databases = new sdk.Databases(client);
 
 let forLearners; 
@@ -65,13 +67,6 @@ async function prepareDatabase() {
     await databases.createStringAttribute(
         forLearners.$id,
         gamesCollection.$id,
-        'gameId',
-        255,
-        true
-    )
-    await databases.createStringAttribute(
-        forLearners.$id,
-        gamesCollection.$id,
         'subject',
         255,
         true
@@ -80,7 +75,7 @@ async function prepareDatabase() {
         forLearners.$id,
         gamesCollection.$id,
         'GameType', // key
-        [], // elements
+        ["Quizz","fillBlanks"], // elements
         false, // required
     );
     await databases.createStringAttribute(

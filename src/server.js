@@ -62,12 +62,18 @@ app.post("/upload", upload.single("file"), async (req, res) => {
     const gameDataString = openAIResponse.data.choices[0].message.content;
     const gameData = JSON.parse(gameDataString);
 
+    const generatedGames = { 
+      subject: "biology",
+      GameType: "Quizz",
+      content: gameDataString
+     }
+
     // Store Game Data in Appwrite
-    const response = await database.createDocument(
+    await database.createDocument(
       process.env.APPWRITE_DATABASE_ID,
-      process.env.APPWRITE_COLLECTION_ID,
-      'unique()',
-      { text: extractedText, gameData }
+      process.env.APPWRITE_GAMESCOLLECTION_ID,
+      ID.unique(),
+      generatedGames
     );
 
     // Return the generated game JSON
