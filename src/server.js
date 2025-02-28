@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-// import pdfParse from 'pdf-parse';
+import pdfParse from 'pdf-parse/lib/pdf-parse.js'
 import axios from 'axios';
 import cors from 'cors';
 import { Client, Databases } from 'node-appwrite'; // Appwrite SDK
@@ -70,6 +70,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 // Start Express Server
 app.listen(PORT, () => {
