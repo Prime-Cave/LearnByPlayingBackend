@@ -5,7 +5,6 @@ import axios from "axios";
 import cors from "cors";
 import { Client, Databases, ID } from "node-appwrite"; // Appwrite SDK
 import dotenv from "dotenv";
-
 dotenv.config();
 
 const app = express();
@@ -59,6 +58,8 @@ app.post("/upload", upload.single("file"), async (req, res) => {
       }
     );
 
+
+
     const gameDataString = openAIResponse.data.choices[0].message.content;
     const gameData = JSON.parse(gameDataString);
 
@@ -84,6 +85,8 @@ app.post("/upload", upload.single("file"), async (req, res) => {
   }
 });
 
+//ENDPOINTS
+
 app.post('/signUp', async(req, res) =>{
   try{
     const response = await database.createDocument(
@@ -97,6 +100,8 @@ app.post('/signUp', async(req, res) =>{
     next(e)
   }
 });
+
+app.post('/learnertype', )
 
 
 // Start Express Server
