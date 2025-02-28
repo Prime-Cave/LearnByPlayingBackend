@@ -75,7 +75,7 @@ async function prepareDatabase() {
         forLearners.$id,
         gamesCollection.$id,
         'GameType', // key
-        ["Quizz","fillBlanks"], // elements
+        ["Quizz","fillBlanks", "mindMap", "MatchMadness", "flashCards", "storyMode"], // elements
         false, // required
     );
     await databases.createStringAttribute(
