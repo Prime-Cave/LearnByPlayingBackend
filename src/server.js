@@ -3,7 +3,7 @@ import multer from "multer";
 import pdfParse from "pdf-parse/lib/pdf-parse.js";
 import axios from "axios";
 import cors from "cors";
-import { Client, Databases } from "node-appwrite"; // Appwrite SDK
+import { Client, Databases, ID } from "node-appwrite"; // Appwrite SDK
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -46,7 +46,11 @@ app.post("/upload", upload.single("file"), async (req, res) => {
       {
         model: "gpt-4-turbo",
         messages: [
-          { role: "system", content: "Generate game data for this content" },
+          {
+            role: "system",
+            content:
+              'You are a Games Master who takes content (like educational materials) and transforms it into a structured game in JSON format. Your role is to understand the text and generate multiple questions based on the content. For each game question, you will provide the following information: a question, multiple-choice options, the correct answer, and an explanation. The game should be structured according to this schema:\n\n{\n  "name": "game_question",\n  "schema": {\n    "type": "object",\n    "properties": {\n      "question": {\n        "type": "string",\n        "description": "The question being asked in the game."\n      },\n      "options": {\n        "type": "array",\n        "description": "The list of answer options available.",\n        "items": {\n          "type": "string",\n          "description": "The text of each answer option."\n        }\n      },\n      "correct_answer": {\n        "type": "string",\n        "description": "The correct answer from the provided options."\n      },\n      "explanation": {\n        "type": "string",\n        "description": "Explanation of the correct answer."\n      }\n    },\n    "required": [\n      "question",\n      "options",\n      "correct_answer",\n      "explanation"\n    ],\n    "additionalProperties": false\n  },\n  "strict": true\n}\n\nPlease provide at least 4 questions based on the following text. Structure each question with its options, correct answer, and explanation. Only include the game data in JSON format. Do not include anything else.\n\n',
+          },
           { role: "user", content: extractedText },
         ],
       },
@@ -55,15 +59,17 @@ app.post("/upload", upload.single("file"), async (req, res) => {
       }
     );
 
-    const gameData = openAIResponse.data.choices[0].message.content;
+    const gameDataString = openAIResponse.data.choices[0].message.content;
+    const gameData = JSON.parse(gameDataString);
 
     // Store Game Data in Appwrite
-    // const response = await database.createDocument(
-    //   process.env.APPWRITE_DATABASE_ID,
-    //   process.env.APPWRITE_COLLECTION_ID,
-    //   'unique()',
-    //   { text: extractedText, gameData }
-    // );
+    const response = await database.createDocument(
+      process.env.APPWRITE_DATABASE_ID,
+      process.env.APPWRITE_COLLECTION_ID,
+      'unique()',
+      { text: extractedText, gameData }
+    );
+
     // Return the generated game JSON
     res.json(gameData);
   } catch (error) {
@@ -71,6 +77,21 @@ app.post("/upload", upload.single("file"), async (req, res) => {
     res.status(500).json({ error: "Internal server error, no vex" });
   }
 });
+
+app.post('/signUp', async(req, res) =>{
+  try{
+    const response = await database.createDocument(
+      process.env.APPWRITE_DATABASE_ID,
+      process.env.APPWRITE_LEARNERCOLLECTION_ID,
+      ID.unique(),
+      req.body
+    )
+    res.json(response)
+  } catch(e){
+    next(e)
+  }
+});
+
 
 // Start Express Server
 app.listen(PORT, () => {
