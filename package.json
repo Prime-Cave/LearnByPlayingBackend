@@ -8,7 +8,6 @@
     "start": "node src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/server.js",
-    "build": "node build.js"
   },
   "keywords": [],
   "author": "",
