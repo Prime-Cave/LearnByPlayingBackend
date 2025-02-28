@@ -87,7 +87,7 @@ app.post("/upload", upload.single("file"), async (req, res) => {
 
 //ENDPOINTS
 
-app.post('/signUp', async(req, res) =>{
+app.post('/signUp', async(req, res, next) =>{
   try{
     const response = await database.createDocument(
       process.env.APPWRITE_DATABASE_ID,
