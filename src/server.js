@@ -97,6 +97,7 @@ app.post('/signUp', async(req, res) =>{
     )
     res.json(response)
   } catch(e){
+    res.json("the error is most likely from the email")
     next(e)
   }
 });
