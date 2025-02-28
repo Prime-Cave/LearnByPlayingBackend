@@ -3,9 +3,9 @@ const sdk = require("node-appwrite");
 const client = new sdk.Client();
 
 client
-  .setEndpoint(process.env.APIENDPOINT)
-  .setProject(process.env.PROJECT_ID) // Replace with your actual project ID
-  .setKey(process.env.APIKEY); // Replace with your actual API key
+  .setEndpoint('https://cloud.appwrite.io/v1')
+  .setProject('') // Replace with your actual project ID
+  .setKey(''); // Replace with your actual API key
   const databases = new sdk.Databases(client);
 
 let forLearners; 
@@ -76,11 +76,25 @@ async function prepareDatabase() {
         255,
         true
     )
+    await databases.createEnumAttribute(
+        forLearners.$id,
+        gamesCollection.$id,
+        'GameType', // key
+        [], // elements
+        false, // required
+    );
     await databases.createStringAttribute(
         forLearners.$id,
         gamesCollection.$id,
-        'gameType',
-        10,
-        true
+        'content',
+        1000000,
+        false
     )
+
 }
+
+async function runAllTasks() {
+    await prepareDatabase();
+}
+
+runAllTasks();
